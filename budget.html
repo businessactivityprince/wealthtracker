@@ -1,0 +1,64 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<style>
+  .inform {
+    display: flex;
+    flex-direction: column;
+    padding: 15px 20px;
+    gap: 15px;
+    border-radius: 25px;
+    background: #121212;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  }
+  .int {
+    width: 100%;
+  }
+</style>
+<form id="budgetForm">
+  <div class="inform">
+    <div class="text">
+      <h2>Set Budget</h2>
+    </div>
+    <input type="text" name="source" placeholder="Source" class="int" required>
+    <input type="number" name="price" placeholder="Price" class="int" required>
+    <label>Valid From:</label>
+    <input type="date" name="validFrom" class="int" required>
+    <label>Valid To:</label>
+    <input type="date" name="validTo" class="int" required>
+    <button type="submit" class="btn">Submit</button>
+  </div>
+</form>
+<script>
+  const form = document.getElementById('budgetForm');
+
+  function formatDateToMMDDYYYY(dateStr) {
+    const date = new Date(dateStr);
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    return `${mm}-${dd}-${yyyy}`;
+  }
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const source = formData.get('source');
+    const price = parseFloat(formData.get('price'));
+    const validFrom = formatDateToMMDDYYYY(formData.get('validFrom'));
+    const validTo = formatDateToMMDDYYYY(formData.get('validTo'));
+
+    let budgets = JSON.parse(localStorage.getItem('budgets')) || [];
+    budgets.push({
+      source,
+      price,
+      validFrom,
+      validTo
+    });
+    localStorage.setItem('budgets', JSON.stringify(budgets));
+
+    alert('Budget saved successfully');
+    form.reset();
+    location.reload();
+  });
+</script>

@@ -1,0 +1,136 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<script src="https://kit.fontawesome.com/8aa17a250d.js" crossorigin="anonymous"></script>
+<style>
+  i { 
+    overflow: hidden;
+    font-size: 28px;
+   }
+  .inform {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-radius: 25px;
+    background: #121212;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  }
+  #earningForm {
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .text > h2 {
+    text-transform: uppercase;
+    letter-spacing: 1.2;
+    font-weight: bolder;
+  }
+  #bankList { 
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+  }
+  .bank-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    justify-content: center;
+    width: 85px;
+  }
+  .bank-item > span {
+    letter-spacing: 1.2;
+    font-size: 18px;
+    font-weight: bolder;
+  }
+  .selected-bank {
+    border: 1.5px solid #00C853;
+    border-radius: 12px;
+    box-shadow: rgba(255, 255, 255, 0.15) 0px 2px 8px;
+    margin: 10px 0;
+  }
+  .banks > .text > h2 {
+    margin-bottom: 10px;
+  }
+</style>
+<form id="earningForm">
+  <div class="banks">
+    <div class="text">
+      <h2>Your Banks</h2>
+    </div>
+    <div id="bankList"></div>
+  </div>
+  <div class="inform">
+    <div class="text">
+      <h2>Add Earning</h2>
+    </div>
+    <input type="text" name="source" placeholder="Source" class="int" required>
+    <input type="number" name="amount" placeholder="Amount" class="int" required>
+    <button type="submit" class="btn">Submit</button>
+  </div>
+</form>
+
+<script>
+  const form = document.getElementById('earningForm');
+  const bankList = document.getElementById('bankList');
+
+  function loadBanks() {
+    let banks = JSON.parse(localStorage.getItem('banks')) || [];
+    let savedBank = localStorage.getItem('selected_bank');
+    bankList.innerHTML = '';
+    banks.forEach((bank, index) => {
+      const div = document.createElement('div');
+      div.innerHTML = '<i class="fa-solid fa-building-columns"></i> ' + '<span>' +  bank.bank + '</span>';
+      div.className = 'bank-item';
+      if (savedBank === bank.bank || (!savedBank && index === 0)) {
+        div.classList.add('selected-bank');
+        if (!savedBank) localStorage.setItem('selected_bank', bank.bank);
+      }
+      div.onclick = () => {
+        localStorage.setItem('selected_bank', bank.bank);
+        document.querySelectorAll('.bank-item').forEach(d => d.classList.remove('selected-bank'));
+        div.classList.add('selected-bank');
+      };
+      bankList.appendChild(div);
+    });
+  }
+
+  function getFormattedDateMMDDYYYY() {
+    const date = new Date();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    return `${mm}-${dd}-${yyyy}`;
+  }
+
+  loadBanks();
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const source = formData.get('source');
+    const amount = parseFloat(formData.get('amount'));
+    const selectedBank = localStorage.getItem('selected_bank');
+    const date = getFormattedDateMMDDYYYY();
+
+    let earnings = JSON.parse(localStorage.getItem('earning')) || [];
+    earnings.push({ source, amount, bank: selectedBank, date });
+    localStorage.setItem('earning', JSON.stringify(earnings));
+
+    let banks = JSON.parse(localStorage.getItem('banks')) || [];
+    banks = banks.map(bank => {
+      if (bank.bank === selectedBank) {
+        bank.price = (bank.price || 0) + amount;
+      }
+      return bank;
+    });
+    localStorage.setItem('banks', JSON.stringify(banks));
+
+    alert('Earning saved successfully');
+    form.reset();
+    location.reload();
+  });
+</script>
+

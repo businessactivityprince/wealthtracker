@@ -1,0 +1,54 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<style>
+  .inform {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 25px;
+    gap: 15px;
+    margin: -60px 0 0 0;
+    border-radius: 25px;
+    background: #121212;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  }
+  .image {
+    background: #b0e1f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 10px 60px 10px;
+  }
+  .image > img {
+    width: 350px;
+  }
+</style>
+<form id="bankForm">
+  <div class="image">
+    <img src="https://i.ibb.co/twMZZgY2/bank.png" alt="bank">
+  </div>
+  <div class="inform">
+    <div class="text">
+      <h2>Connect Bank Account</h2>
+      <span>Enhances financial visibility by consolidating all bank balances for smarter, real-time wealth management decisions.</span>
+    </div>
+    <input type="text" name="bank" placeholder="Bank Name" class="int" required>
+    <input type="number" name="price" placeholder="Opening Balance" class="int" required>
+    <button type="submit" class="btn">Add bank</button>
+  </div>
+</form>
+<script>
+  const form = document.getElementById('bankForm');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const bank = formData.get('bank');
+    const price = parseFloat(formData.get('price'));
+    let banks = JSON.parse(localStorage.getItem('banks')) || [];
+    banks.push({ bank, price });
+    localStorage.setItem('banks', JSON.stringify(banks));
+    alert('Bank Added Successfully!');
+    form.reset();
+    location.reload();
+  });
+</script>

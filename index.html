@@ -1,0 +1,718 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financial Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+body {
+    background: #121212;
+    color: #FFFFFF;
+    font-family: "Raleway", sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    animation: fadeIn 0.6s ease-out;
+}
+
+h1, h2, h3, h4, h5, h6, span, p, strong, b {
+    font-family: "Poppins", sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #FFFFFF;
+    text-align: center;
+    animation: slideInLeft 0.8s ease-out;
+}
+
+.banks-section {
+    margin-bottom: 30px;
+    animation: fadeIn 1s ease-out 0.2s both;
+}
+
+.banks-container {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 10px 5px;
+    scroll-behavior: smooth;
+}
+
+.banks-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.banks-container::-webkit-scrollbar-track {
+    background: #2A2A2A;
+    border-radius: 10px;
+}
+
+.banks-container::-webkit-scrollbar-thumb {
+    background: #00C853;
+    border-radius: 10px;
+}
+
+.banks-container::-webkit-scrollbar-thumb:hover {
+    background: #00A843;
+}
+
+.bank-card {
+    background: #1E1E1E;
+    border-radius: 15px;
+    padding: 25px;
+    border: 1px solid #2A2A2A;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    min-width: 280px;
+    flex-shrink: 0;
+}
+
+.bank-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #00C853, #4CAF50);
+}
+
+.bank-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 200, 83, 0.15);
+    animation: pulse 2s infinite;
+}
+
+.bank-card > div:first-child {
+    font-size: 18px;
+    font-weight: 600;
+    color: #FFFFFF;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bank-icon {
+    font-size: 20px;
+    color: #00C853;
+}
+
+.bank-card > div:nth-child(2) {
+    font-size: 24px;
+    font-weight: 700;
+    color: #00C853;
+    margin-bottom: 15px;
+}
+
+.delete-btn {
+    background: #F44336;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.delete-btn:hover {
+    background: #D32F2F;
+    transform: scale(1.1) rotate(180deg);
+    animation: spin 0.3s ease-in-out;
+}
+
+.filter-section {
+    background: #1E1E1E;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid #2A2A2A;
+    animation: fadeIn 1s ease-out 0.4s both;
+}
+
+.date-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.date-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.date-group label {
+    color: #B3B3B3;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    min-width: 40px;
+}
+
+.date-group input[type="date"] {
+    background: #2A2A2A;
+    color: #FFFFFF;
+    border: 1px solid #4A4A4A;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: "Raleway", sans-serif;
+    outline: none;
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.date-group input[type="date"]:focus {
+    border-color: #00C853;
+    box-shadow: 0 0 10px rgba(0, 200, 83, 0.2);
+    transform: translateY(-2px);
+}
+
+.filter-btn {
+    background: #00C853;
+    color: #FFFFFF;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 auto;
+}
+
+.filter-btn:hover {
+    background: #00A843;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 200, 83, 0.3);
+}
+
+.filter-btn:active {
+    transform: scale(0.95);
+}
+
+.navigation-section {
+    background: #1E1E1E;
+    border-radius: 15px;
+    margin: 0px 15px 20px 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 1px solid #2A2A2A;
+    animation: fadeIn 1s ease-out 0.6s both;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #B3B3B3;
+    transition: all 0.3s ease;
+    padding: 15px 10px;
+    border-radius: 12px;
+    min-width: 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 200, 83, 0.1);
+    transition: left 0.3s ease;
+}
+
+.nav-item:hover::before {
+    left: 0;
+}
+
+.nav-item:hover {
+    color: #00C853;
+    transform: translateY(-3px);
+}
+
+.nav-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.nav-item:hover .nav-icon {
+    transform: scale(1.1);
+    text-shadow: 0 0 10px rgba(0, 200, 83, 0.5);
+}
+
+.nav-text {
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    letter-spacing: 0.3px;
+    position: relative;
+    z-index: 1;
+}
+
+.charts-section {
+    animation: fadeIn 1s ease-out 0.8s both;
+}
+
+#totalBar {
+    background: #1E1E1E;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 1px solid #2A2A2A;
+    width: 100%;
+}
+
+.pie {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px;
+    background: #1E1E1E;
+    border-radius: 15px;
+    border: 1px solid #2A2A2A;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.pie-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    flex: 1;
+    min-width: 250px;
+}
+
+.pie-bar > span {
+    font-size: 16px;
+    letter-spacing: 1.2px;
+    font-weight: 600;
+    color: #FFFFFF;
+    text-transform: uppercase;
+}
+
+#earningBar, #expenseBar {
+    width: 220px;
+    height: 220px;
+    background: #2A2A2A;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    padding: 15px;
+}
+
+#earningBar:hover, #expenseBar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(0, 200, 83, 0.2);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 15px;
+    }
+    
+    .date-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .date-group {
+        justify-content: space-between;
+    }
+    
+    .pie {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .pie-bar {
+        min-width: 100%;
+    }
+    
+    #earningBar, #expenseBar {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .bank-card {
+        min-width: 250px;
+    }
+    
+    .nav-container {
+        gap: 5px;
+    }
+    
+    .nav-item {
+        min-width: 70px;
+        padding: 12px 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    h2 {
+        font-size: 24px;
+        text-align: left;
+    }
+    
+    .filter-section {
+        padding: 20px 15px;
+    }
+    
+    .bank-card {
+        padding: 20px;
+        min-width: 220px;
+    }
+    
+    .nav-item {
+        min-width: 60px;
+    }
+    
+    .nav-text {
+        font-size: 10px;
+    }
+    
+    #earningBar, #expenseBar {
+        width: 180px;
+        height: 180px;
+    }
+}
+</style>
+
+<div class="container">
+    <div class="banks-section">
+        <h2>Banks</h2>
+        <div class="banks-container" id="bankCards"></div>
+    </div>
+
+    <div class="filter-section">
+        <div class="date-container">
+            <div class="date-group">
+                <label>From:</label>
+                <input type="date" id="startDate">
+            </div>
+            <div class="date-group">
+                <label>To:</label>
+                <input type="date" id="endDate">
+            </div>
+        </div>
+        <button class="filter-btn" onclick="drawCharts()">
+            <i class="fas fa-filter"></i>
+            Apply Filter
+        </button>
+    </div>
+
+    <div class="charts-section">
+        <canvas id="totalBar"></canvas>
+        <div class="pie">
+            <div class="pie-bar">
+                <span>Earning</span>
+                <canvas id="earningBar"></canvas>
+            </div>
+            <div class="pie-bar">
+                <span>Expense</span>
+                <canvas id="expenseBar"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="navigation-section">
+    <div class="nav-container">
+        <a href="bank.html" class="nav-item">
+            <i class="fas fa-university nav-icon"></i>
+            <span class="nav-text">Banks</span>
+        </a>
+        <a href="expense.html" class="nav-item">
+            <i class="fas fa-credit-card nav-icon"></i>
+            <span class="nav-text">Expenses</span>
+        </a>
+        <a href="earning.html" class="nav-item">
+            <i class="fas fa-coins nav-icon"></i>
+            <span class="nav-text">Earnings</span>
+        </a>
+        <a href="budget.html" class="nav-item">
+            <i class="fas fa-calculator nav-icon"></i>
+            <span class="nav-text">Budget</span>
+        </a>
+        <a href="my_budget.html" class="nav-item">
+            <i class="fas fa-chart-pie nav-icon"></i>
+            <span class="nav-text">My Budget</span>
+        </a>
+        <a href="download.html" class="nav-item">
+            <i class="fas fa-download nav-icon"></i>
+            <span class="nav-text">Download</span>
+        </a>
+        <a href="upload.html" class="nav-item">
+            <i class="fas fa-upload nav-icon"></i>
+            <span class="nav-text">Upload</span>
+        </a>
+    </div>
+</div>
+
+<script>
+const bankCards = document.getElementById('bankCards');
+let currentEarningChart, currentExpenseChart, currentTotalChart;
+
+function getData(key) {
+    return JSON.parse(localStorage.getItem(key)) || [];
+}
+
+function setData(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+}
+
+function deleteBank(index) {
+    let banks = getData('banks');
+    banks.splice(index, 1);
+    setData('banks', banks);
+    loadBanks();
+    drawCharts();
+}
+
+function loadBanks() {
+    bankCards.innerHTML = '';
+    let banks = getData('banks');
+    if (!banks || banks.length === 0) {
+        window.location.href = 'bank.html';
+        return;
+    }
+    banks.forEach((bank, index) => {
+        const card = document.createElement('div');
+        card.className = 'bank-card';
+        const name = document.createElement('div');
+        name.innerHTML = `<i class="fas fa-university bank-icon"></i>${bank.bank}`;
+        const balance = document.createElement('div');
+        balance.textContent = "₹" + bank.price;
+        const btn = document.createElement('button');
+        btn.innerHTML = '<i class="fas fa-trash"></i>';
+        btn.className = 'delete-btn';
+        btn.onclick = () => {
+            if (confirm("Really want to delete?")) {
+                deleteBank(index);
+            }
+        };
+        card.appendChild(name);
+        card.appendChild(balance);
+        card.appendChild(btn);
+        bankCards.appendChild(card);
+    });
+}
+
+function isDateInRange(dateStr, start, end) {
+    const d = new Date(dateStr);
+    return (!start || d >= new Date(start)) && (!end || d <= new Date(end));
+}
+
+function getFormattedDate(date) {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function setDefaultDateRange() {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(end.getDate() - 30);
+    document.getElementById('startDate').value = getFormattedDate(start);
+    document.getElementById('endDate').value = getFormattedDate(end);
+}
+
+function drawCharts() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    let earnings = getData('earning');
+    let expenses = getData('expense');
+
+    if (startDate || endDate) {
+        earnings = earnings.filter(item => isDateInRange(item.date, startDate, endDate));
+        expenses = expenses.filter(item => isDateInRange(item.date, startDate, endDate));
+    }
+
+    const aggregate = (data) => {
+        const map = {};
+        data.forEach(item => {
+            if (!map[item.source]) map[item.source] = 0;
+            map[item.source] += parseFloat(item.amount);
+        });
+        return Object.entries(map);
+    };
+
+    const earningResult = aggregate(earnings);
+    const expenseResult = aggregate(expenses);
+
+    const expenseLabels = expenseResult.map(x => x[0]);
+    const expenseData = expenseResult.map(x => x[1]);
+    const earningLabels = earningResult.map(x => x[0]);
+    const earningData = earningResult.map(x => x[1]);
+
+    const totalExpense = expenseData.reduce((a, b) => a + b, 0);
+    const totalEarning = earningData.reduce((a, b) => a + b, 0);
+
+    if (currentEarningChart) currentEarningChart.destroy();
+    currentEarningChart = new Chart(document.getElementById('earningBar'), {
+        type: 'doughnut',
+        data: {
+            labels: earningLabels,
+            datasets: [{
+                data: earningData,
+                backgroundColor: earningLabels.map((_, i) => `hsl(${120 + i * 40}, 70%, 60%)`),
+                borderColor: '#1E1E1E',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { 
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        color: '#FFFFFF',
+                        usePointStyle: true,
+                        padding: 15
+                    }
+                }
+            }
+        }
+    });
+
+    if (currentExpenseChart) currentExpenseChart.destroy();
+    currentExpenseChart = new Chart(document.getElementById('expenseBar'), {
+        type: 'doughnut',
+        data: {
+            labels: expenseLabels,
+            datasets: [{
+                data: expenseData,
+                backgroundColor: expenseLabels.map((_, i) => `hsl(${0 + i * 40}, 70%, 60%)`),
+                borderColor: '#1E1E1E',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { 
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        color: '#FFFFFF',
+                        usePointStyle: true,
+                        padding: 15
+                    }
+                }
+            }
+        }
+    });
+
+    if (currentTotalChart) currentTotalChart.destroy();
+    currentTotalChart = new Chart(document.getElementById('totalBar'), {
+        type: 'bar',
+        data: {
+            labels: ['Expense', 'Earning'],
+            datasets: [{
+                data: [totalExpense, totalEarning],
+                backgroundColor: ['#F44336', '#00C853'],
+                borderRadius: 8,
+                borderSkipped: false
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    grid: { color: '#2A2A2A' },
+                    ticks: { color: '#B3B3B3' }
+                },
+                x: {
+                    grid: { color: '#2A2A2A' },
+                    ticks: { color: '#B3B3B3' }
+                }
+            }
+        }
+    });
+}
+
+loadBanks();
+setDefaultDateRange();
+drawCharts();
+</script>

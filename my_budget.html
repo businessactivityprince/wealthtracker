@@ -1,0 +1,496 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Summary Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes countUp {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+body {
+    background: #121212;
+    color: #FFFFFF;
+    font-family: "Raleway", sans-serif;
+    min-height: 100vh;
+    animation: fadeIn 0.6s ease-out;
+    padding-bottom: 120px;
+}
+
+h1, h2, h3, h4, h5, h6, span, p, strong, b {
+    font-family: "Poppins", sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    color: #FFFFFF;
+    text-align: center;
+    animation: slideInLeft 0.8s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+h2::before {
+    content: '\f53a';
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: #00C853;
+    font-size: 32px;
+}
+
+.budget-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+    animation: fadeIn 1s ease-out 0.2s both;
+}
+
+.budget-card {
+    background: #1E1E1E;
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid #2A2A2A;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    animation: countUp 0.8s ease-out;
+}
+
+.budget-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    transition: all 0.3s ease;
+}
+
+.total-budget::before {
+    background: linear-gradient(90deg, #2196F3, #03A9F4);
+}
+
+.used-budget::before {
+    background: linear-gradient(90deg, #FF9800, #FFC107);
+}
+
+.remaining-budget::before {
+    background: linear-gradient(90deg, #00C853, #4CAF50);
+}
+
+.budget-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    animation: pulse 2s infinite;
+}
+
+.budget-icon {
+    font-size: 40px;
+    margin-bottom: 15px;
+    display: block;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.total-budget .budget-icon {
+    color: #2196F3;
+}
+
+.used-budget .budget-icon {
+    color: #FF9800;
+}
+
+.remaining-budget .budget-icon {
+    color: #00C853;
+}
+
+.budget-card:hover .budget-icon {
+    transform: scale(1.1);
+    text-shadow: 0 0 20px currentColor;
+}
+
+.budget-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #B3B3B3;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.budget-amount {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+    transition: all 0.3s ease;
+}
+
+.total-budget .budget-amount {
+    color: #2196F3;
+}
+
+.used-budget .budget-amount {
+    color: #FF9800;
+}
+
+.remaining-budget .budget-amount {
+    color: #00C853;
+}
+
+.budget-card:hover .budget-amount {
+    transform: scale(1.05);
+}
+
+.reset-section {
+    text-align: center;
+    margin: 40px 0;
+    animation: fadeIn 1s ease-out 0.4s both;
+}
+
+.reset-btn {
+    background: linear-gradient(135deg, #F44336, #E53935);
+    color: #FFFFFF;
+    border: none;
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-family: "Raleway", sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 20px rgba(244, 67, 54, 0.3);
+}
+
+.reset-btn:hover {
+    background: linear-gradient(135deg, #D32F2F, #C62828);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(244, 67, 54, 0.4);
+}
+
+.reset-btn:active {
+    transform: scale(0.95);
+}
+
+.navigation-section {
+    background: #1E1E1E;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 40px;
+    border: 1px solid #2A2A2A;
+    animation: fadeIn 1s ease-out 0.6s both;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #B3B3B3;
+    transition: all 0.3s ease;
+    padding: 15px 10px;
+    border-radius: 12px;
+    min-width: 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 200, 83, 0.1);
+    transition: left 0.3s ease;
+}
+
+.nav-item:hover::before {
+    left: 0;
+}
+
+.nav-item:hover {
+    color: #00C853;
+    transform: translateY(-3px);
+}
+
+.nav-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.nav-item:hover .nav-icon {
+    transform: scale(1.1);
+    text-shadow: 0 0 10px rgba(0, 200, 83, 0.5);
+}
+
+.nav-text {
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    letter-spacing: 0.3px;
+    position: relative;
+    z-index: 1;
+}
+
+.progress-section {
+    margin: 40px 0;
+    animation: fadeIn 1s ease-out 0.8s both;
+}
+
+.progress-bar {
+    background: #2A2A2A;
+    border-radius: 15px;
+    height: 20px;
+    overflow: hidden;
+    position: relative;
+    margin: 20px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00C853, #4CAF50);
+    border-radius: 15px;
+    transition: width 1.5s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.progress-text {
+    text-align: center;
+    font-weight: 600;
+    color: #B3B3B3;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 15px;
+    }
+    
+    .budget-cards {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    h2 {
+        font-size: 24px;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .budget-card {
+        padding: 25px;
+    }
+    
+    .budget-amount {
+        font-size: 28px;
+    }
+    
+    .nav-item {
+        min-width: 70px;
+        padding: 12px 5px;
+    }
+    
+    .nav-text {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .budget-card {
+        padding: 20px;
+    }
+    
+    .budget-amount {
+        font-size: 24px;
+    }
+    
+    .budget-icon {
+        font-size: 32px;
+    }
+    
+    .reset-btn {
+        padding: 12px 25px;
+        font-size: 12px;
+    }
+    
+    .nav-item {
+        min-width: 60px;
+    }
+}
+</style>
+
+<div class="container">
+    <h2>Budget Summary</h2>
+    
+    <div class="budget-cards">
+        <div class="budget-card total-budget">
+            <i class="fas fa-wallet budget-icon"></i>
+            <div class="budget-title">Total Budget</div>
+            <div class="budget-amount" id="totalBudget">₹0</div>
+        </div>
+        
+        <div class="budget-card used-budget">
+            <i class="fas fa-credit-card budget-icon"></i>
+            <div class="budget-title">Used Budget</div>
+            <div class="budget-amount" id="usedBudget">₹0</div>
+        </div>
+        
+        <div class="budget-card remaining-budget">
+            <i class="fas fa-piggy-bank budget-icon"></i>
+            <div class="budget-title">Remaining Budget</div>
+            <div class="budget-amount" id="remainingBudget">₹0</div>
+        </div>
+    </div>
+    
+    <div class="progress-section">
+        <div class="progress-text">Budget Usage Progress</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressPercentage">0%</div>
+    </div>
+    
+    <div class="reset-section">
+        <button class="reset-btn" onclick="resetBudgets()">
+            <i class="fas fa-redo-alt"></i>
+            Reset Budgets
+        </button>
+    </div>
+</div>
+
+<script>
+function parseDate(str) {
+    const [mm, dd, yyyy] = str.split('-');
+    return new Date(`${yyyy}-${mm}-${dd}`);
+}
+
+function calculateBudget() {
+    const budgets = JSON.parse(localStorage.getItem('budgets')) || [];
+    const expenses = JSON.parse(localStorage.getItem('expense')) || [];
+
+    let totalBudget = 0;
+    let usedBudget = 0;
+
+    budgets.forEach(budget => {
+        totalBudget += budget.price;
+
+        const startDate = parseDate(budget.validFrom);
+        const endDate = parseDate(budget.validTo);
+
+        expenses.forEach(exp => {
+            if (
+                exp.source === budget.source &&
+                new Date(exp.date) >= startDate &&
+                new Date(exp.date) <= endDate
+            ) {
+                usedBudget += exp.amount;
+            }
+        });
+    });
+
+    const remainingBudget = totalBudget - usedBudget;
+
+    document.getElementById('totalBudget').textContent = '₹' + totalBudget.toLocaleString();
+    document.getElementById('usedBudget').textContent = '₹' + usedBudget.toLocaleString();
+    document.getElementById('remainingBudget').textContent = '₹' + remainingBudget.toLocaleString();
+
+    const progressPercentage = totalBudget > 0 ? (usedBudget / totalBudget) * 100 : 0;
+    document.getElementById('progressFill').style.width = Math.min(progressPercentage, 100) + '%';
+    document.getElementById('progressPercentage').textContent = Math.round(progressPercentage) + '% Used';
+
+    if (progressPercentage > 90) {
+        document.getElementById('progressFill').style.background = 'linear-gradient(90deg, #F44336, #E53935)';
+    } else if (progressPercentage > 70) {
+        document.getElementById('progressFill').style.background = 'linear-gradient(90deg, #FF9800, #FFC107)';
+    }
+
+    setTimeout(() => {
+        document.querySelectorAll('.budget-amount').forEach((el, index) => {
+            el.style.animationDelay = (index * 0.2) + 's';
+        });
+    }, 100);
+}
+
+function resetBudgets() {
+    if (confirm('Are you sure you want to reset all budgets? This action cannot be undone.')) {
+        localStorage.removeItem('budgets');
+        location.reload();
+    }
+}
+
+calculateBudget();
+</script>
